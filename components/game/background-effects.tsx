@@ -1,23 +1,60 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export function BackgroundEffects() {
-  const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
+  const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setScreenSize({ width: window.innerWidth, height: window.innerHeight });
-    }
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+    setMounted(true);
+
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none">
       {/* Animated rangoli patterns */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[url('https://images.unsplash.com/photo-1604423043492-41303788de89')] bg-contain bg-no-repeat opacity-30" />
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-[url('https://images.unsplash.com/photo-1604423043492-41303788de89')] bg-contain bg-no-repeat opacity-30 rotate-180" />
+        <motion.div 
+          className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-orange-400 to-yellow-300 rounded-full opacity-30"
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 360],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-400 to-yellow-300 rounded-full opacity-30"
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [360, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
       </div>
 
       {/* Floating diyas */}
@@ -26,12 +63,13 @@ export function BackgroundEffects() {
           key={i}
           className="absolute w-2 h-2 bg-yellow-400 rounded-full"
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * dimensions.width,
+            y: Math.random() * dimensions.height,
           }}
           animate={{
             y: [0, -20, 0],
             opacity: [0.4, 1, 0.4],
+            scale: [1, 1.2, 1],
           }}
           transition={{
             duration: 2 + Math.random() * 2,
