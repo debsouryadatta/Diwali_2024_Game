@@ -1,8 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from 'react';
 
 export function BackgroundEffects() {
+  const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setScreenSize({ width: window.innerWidth, height: window.innerHeight });
+    }
+  }, []);
+
   return (
     <div className="fixed inset-0 pointer-events-none">
       {/* Animated rangoli patterns */}
